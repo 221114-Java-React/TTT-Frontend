@@ -4,6 +4,7 @@ import { UPDATE_CART_ACTION_TYPE } from '../utilities/constants';
 import { AppStateContext, DispatchContext } from '../utilities/Contexts';
 
 import tieBomber from '../assets/tiebomber.png';
+import eCommerce_API from '../utilities/ApiConfig';
 
 
 export default function ItemDetailPage() {
@@ -13,11 +14,28 @@ export default function ItemDetailPage() {
   const dispatch = useContext(DispatchContext);
   const applicationState = useContext(AppStateContext);
   const cart = applicationState.cart;
+  const userData = applicationState.userData;
 
   function handleAddToCart() {
     const newCart = new Map(cart);
     if (item) newCart.set(item, 1);
     dispatch({ type: UPDATE_CART_ACTION_TYPE, newCart });
+    handleAuthChecking();
+  }
+
+  //Checks to see if the user has a token. CURRENTLY DOESN'T DO ANY TOKEN VALIDATION AND ONLY CHECKS IF THERE IS A TOKEN
+  function handleAuthChecking(){
+    if(userData?.token){
+      eCommerce_API.post("/cart", {
+        "userId" : "FILLERTEXT",
+        "itemId" : item?.id,
+        "amount" : 1
+      },{
+        "headers": {
+            authorization:userData?.token
+        }
+    }).catch((e)=>console.log(e))
+    }
   }
 
   return (

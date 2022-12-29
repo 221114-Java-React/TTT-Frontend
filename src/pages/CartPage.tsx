@@ -5,7 +5,7 @@ import { UPDATE_CART_ACTION_TYPE } from "../utilities/constants";
 import { AppStateContext, DispatchContext } from '../utilities/Contexts';
 import { ItemType } from "../utilities/types";
 
-  //CONSIDER ADDING A SAVE CHANGES OPTION
+//CONSIDER ADDING A SAVE CHANGES OPTION
 export default function CheckoutConfirmationPage(){
     const applicationState = useContext(AppStateContext);
     const dispatch = useContext(DispatchContext);
@@ -26,7 +26,6 @@ export default function CheckoutConfirmationPage(){
     //Removes an item from the cart
     function handleDelete(item: ItemType){
       const newCart = new Map(cart);
-      console.log(item);
       newCart.delete(item);
       dispatch({ type: UPDATE_CART_ACTION_TYPE, newCart });
     }
@@ -45,12 +44,6 @@ export default function CheckoutConfirmationPage(){
       const checkoutPath = "/cart/confirmation";
       //Make a POST request to update the user cart in database.
       navigate(checkoutPath);
-    }
-
-    //Used to save the user cart by making post request to the database
-    function saveCart(){
-      //CURRENTLY DOES NOTHING. NEED TO WAIT ON BACKEND IMPLEMENTATION
-      console.log("saving cart");
     }
   
   //Check whether the cart is loaded

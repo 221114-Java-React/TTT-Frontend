@@ -1,6 +1,7 @@
 import { MagnifyingGlassIcon, ArrowDownIcon, ArrowUpIcon, ArrowsUpDownIcon } from '@heroicons/react/24/outline';
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DisplayTableRow } from '../components/DisplayTableRow';
+import { AppStateContext } from '../utilities/Contexts';
 import { cartItemType } from "../utilities/types";
 
 //Any additional columns added to this will mean additional changes will need to be made to both this page and types.ts
@@ -66,6 +67,8 @@ const fakeList = [
 
 export default function PurchaseHistoryPage(){
     //Hooks
+    const applicationState = useContext(AppStateContext);
+    const userData = applicationState.userData;
     const [totalPurchaseHistory, setTotalPurchaseHistory] = useState<cartItemType[]>([]); //NEVER CALL THIS SET AGAIN
     const [filteredPurchaseHistory, setFilteredPurchaseHistory] = useState<cartItemType[]>([]);
     const [orderDirection, setOrderDirection] = useState<'asc' | 'dsc' | null>(null);
@@ -197,14 +200,14 @@ export default function PurchaseHistoryPage(){
     return(
         <>
             <div className="flex flex-col items-center">
-                <h1 className="text-4xl font-bold">Past Orders</h1>
+                <h1 className="text-4xl font-bold">{userData?.givenName}'s Past Orders</h1>
             </div>
             <div className="ml-3 mr-3 flex flex-row">
                 <div className="flex flex-row">
                     <label>
                         <MagnifyingGlassIcon className='w-5 h-5 mr-1'/>
                     </label>
-                    <input className="bg-slate-100 outline-none placeholder:text-sm placeholder:px-2  text-sm" 
+                    <input className="bg-slate-500 outline-none placeholder:text-sm placeholder-slate-50 placeholder:px-2  text-sm" 
                         placeholder="Filter By Item Name" type="text" id="item_name"
                         value={filter} onChange={(e) => filterName(e)}
                     />
@@ -213,9 +216,9 @@ export default function PurchaseHistoryPage(){
             <div className="flex flex-col items-center ml-3 mr-3 mt-2">
             <table className="min-w-full" id="filteredPurchaseHistory">
                 <thead className="text-left border">
-                    <tr className="text-md">
-                        <th scope="col" className="px-2 w-1/4 border-r">Item ID</th>
-                        <th scope="col" className="px-2 w-1/4 border-r">Item Name</th>
+                    <tr className="text-md bg-slate-800">
+                        <th scope="col" className="px-2 w-1/4 border-r cursor-default">Item ID</th>
+                        <th scope="col" className="px-2 w-1/4 border-r cursor-default">Item Name</th>
                         <th scope="col" className="px-2 w-1/4 border-r cursor-pointer" 
                             onClick={() => sortOrder()}>Order ID 
                             {
@@ -238,7 +241,7 @@ export default function PurchaseHistoryPage(){
                             }
                         </th>
                         <th scope="col" className="px-2 w-1/12 border-r cursor-pointer"
-                            onClick={() => sortTotalPrice()} >Total Price
+                            onClick={() => sortTotalPrice()} >Total
                             {
                                 (totalPriceDirection !== 'asc')
                                 ? (totalPriceDirection !== 'dsc') 
@@ -257,7 +260,6 @@ export default function PurchaseHistoryPage(){
                     )}
                 </tbody>
             </table>
-
         </div>
         </>
     );
