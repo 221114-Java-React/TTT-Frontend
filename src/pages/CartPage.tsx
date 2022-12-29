@@ -5,11 +5,14 @@ import { UPDATE_CART_ACTION_TYPE } from "../utilities/constants";
 import { AppStateContext, DispatchContext } from '../utilities/Contexts';
 import { ItemType } from "../utilities/types";
 
+import eCommerce_API from '../utilities/ApiConfig';
+
 //CONSIDER ADDING A SAVE CHANGES OPTION
 export default function CheckoutConfirmationPage(){
     const applicationState = useContext(AppStateContext);
     const dispatch = useContext(DispatchContext);
     const cart = applicationState.cart;
+    const userData = applicationState.userData;
     const navigate = useNavigate();
 
     //Updates cart total price
@@ -28,6 +31,14 @@ export default function CheckoutConfirmationPage(){
       const newCart = new Map(cart);
       newCart.delete(item);
       dispatch({ type: UPDATE_CART_ACTION_TYPE, newCart });
+      if(userData?.token){
+        eCommerce_API.delete("/cart", {
+          params: { itemId:item.id },
+          "headers" : {
+            authorization:userData?.token
+          }
+        }).catch((e)=>console.log(e))
+      }
     }
 
     //Updates the amount of an item in the cart
@@ -37,6 +48,17 @@ export default function CheckoutConfirmationPage(){
       const newCart = new Map(cart);
       newCart.set(item, newAmount);
       dispatch({ type: UPDATE_CART_ACTION_TYPE, newCart });
+      if(userData?.token){
+        eCommerce_API.put("/cart", {
+          "userId" : "FILLERTEXT",
+          "itemId" : item?.id,
+          "amount" : newAmount
+        },{
+          "headers": {
+              authorization:userData?.token
+          }
+        }).catch((e)=>console.log(e))
+      }
     }
 
     //Changes the current page checkout.

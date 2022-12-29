@@ -34,7 +34,7 @@ export default function ItemDetailPage() {
         "headers": {
             authorization:userData?.token
         }
-    }).catch((e)=>console.log(e))
+      }).catch((e)=>console.log(e))
     }
   }
 
